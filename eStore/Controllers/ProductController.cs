@@ -68,13 +68,12 @@ namespace eStore.Controllers
             }
         }
         [HttpPost("create")]
-        public IActionResult Post([FromBody] ProductViewModel product)
+        public IActionResult Post([FromBody] Product product)
         {
             try
             {
-                var createProduct = _mapper.Map<Product>(product);
-                _productRepo.AddProduct(createProduct);
-                return Created("", createProduct);
+                _productRepo.AddProduct(product);
+                return Created("", product);
             }
             catch (System.Exception)
             {
@@ -82,13 +81,11 @@ namespace eStore.Controllers
             }
         }
         [HttpPut("update")]
-        public IActionResult Put([FromBody] ProductViewModel product)
+        public IActionResult Put([FromBody] Product product)
         {
             try
             {
-                var updateProduct = new Product();
-                _mapper.Map<ProductViewModel, Product>(product, updateProduct);
-                _productRepo.UpdateProduct(updateProduct);
+                _productRepo.UpdateProduct(product);
                 return Ok();
             }
             catch (System.Exception)

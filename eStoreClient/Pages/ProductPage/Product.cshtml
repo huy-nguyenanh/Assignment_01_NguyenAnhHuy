@@ -1,0 +1,79 @@
+﻿@page
+@model eStoreClient.Pages.ProductPage.ProductModel
+
+@{
+    ViewData["Title"] = "Product";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Product</h1>
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <script>alert("@ViewData["ErrorMessage"]")</script>
+}
+@if (Model.Role == "admin")
+{
+    <p>
+        <a asp-page="Create">Create New</a>
+    </p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product[0].ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product[0].Weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product[0].UnitPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product[0].UnitsInStock)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product[0].Category)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Product)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Weight)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitsInStock)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                </td>
+                @if (Model.Role == "admin")
+                {
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.ProductId">Edit</a> |
+                        <a asp-page="./Detail" asp-route-id="@item.ProductId">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.ProductId">Delete</a>
+                    </td>
+                }
+                @if (Model.Role != "admin")
+                {
+                    <td>
+                        <a asp-page="./Detail" asp-route-id="@item.ProductId">Details</a>
+                    </td>
+                }
+
+            </tr>
+        }
+    </tbody>
+</table>

@@ -26,6 +26,10 @@ namespace eStore
         {
 
             services.AddControllers();
+            services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
             services.AddDbContext<FStoreDBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("database")));
 
             services.AddScoped<IMemberRepository, MemberRepository>();

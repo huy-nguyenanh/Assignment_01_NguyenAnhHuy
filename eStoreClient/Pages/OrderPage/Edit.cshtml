@@ -1,0 +1,110 @@
+﻿@page
+@model eStoreClient.Pages.OrderPage.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Order.OrderId" />
+            <div class="form-group">
+                <label asp-for="Order.MemberId" class="control-label"></label>
+                <select asp-for="Order.MemberId" class="form-control" asp-items="ViewBag.MemberId"></select>
+                <span asp-validation-for="Order.MemberId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.OrderDate" class="control-label"></label>
+                <input asp-for="Order.OrderDate" class="form-control" />
+                <span asp-validation-for="Order.OrderDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.RequiredDate" class="control-label"></label>
+                <input asp-for="Order.RequiredDate" class="form-control" />
+                <span asp-validation-for="Order.RequiredDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.ShippedDate" class="control-label"></label>
+                <input asp-for="Order.ShippedDate" class="form-control" />
+                <span asp-validation-for="Order.ShippedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Order.Freight" class="control-label"></label>
+                <input asp-for="Order.Freight" class="form-control" />
+                <span asp-validation-for="Order.Freight" class="text-danger"></span>
+            </div>
+            <h1>Order Details</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            ProductId
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                        <th>
+                            UnitPrice
+                        </th>
+                        <th>
+                            Discount
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Order.OrderDetails.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.OrderDetail[i].OrderId" />
+
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="@Model.OrderDetail[i].ProductId" class="form-control" />
+                                    <span asp-validation-for="@Model.OrderDetail[i].ProductId" class="text-danger"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="@Model.OrderDetail[i].Quantity" class="form-control" />
+                                    <span asp-validation-for="@Model.OrderDetail[i].Quantity" class="text-danger"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="@Model.OrderDetail[i].UnitPrice" class="form-control" />
+                                    <span asp-validation-for="@Model.OrderDetail[i].UnitPrice" class="text-danger"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input asp-for="@Model.OrderDetail[i].Discount" class="form-control" />
+                                    <span asp-validation-for="@Model.OrderDetail[i].Discount" class="text-danger"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Order" asp-page-handler="CallAPI">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

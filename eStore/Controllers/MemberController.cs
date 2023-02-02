@@ -32,6 +32,16 @@ namespace eStore.Controllers
             }
             return Ok(members);
         }
+        [HttpGet("login/{email}/{password}")]
+        public IActionResult Get(string email, string password)
+        {
+            var member = _memberRepo.CheckLogin(email, password);
+            if (member == null)
+            {
+                return BadRequest("Wrong email or password!");
+            }
+            return Ok(member);
+        }
         [HttpGet("{email}")]
         public IActionResult Get(string email)
         {

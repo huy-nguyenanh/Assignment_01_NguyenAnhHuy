@@ -1,4 +1,5 @@
 ﻿using DataLayer.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace BussinessLayer.DAOs
             try
             {
                 var myStoreDB = new FStoreDBContext();
-                orders = myStoreDB.Orders.ToList();
+                orders = myStoreDB.Orders.Include(c => c.OrderDetails).Include(c => c.Member).ToList();
             }
             catch (Exception ex)
             {
@@ -64,7 +65,21 @@ namespace BussinessLayer.DAOs
             try
             {
                 var myStoreDB = new FStoreDBContext();
-                order = myStoreDB.Orders.SingleOrDefault(order => order.OrderId == orderID);
+                order = myStoreDB.Orders.Include(c => c.OrderDetails).Include(c => c.Member).SingleOrDefault(order => order.OrderId == orderID);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return order;
+        }
+        public IEnumerable<Order> GetOrderByMemberEmail(string email)
+        {
+            IEnumerable<Order> order = null;
+            try
+            {
+                var myStoreDB = new FStoreDBContext();
+                order = myStoreDB.Orders.Include(c => c.OrderDetails).Include(c => c.Member).Where(order => order.Member.Email.Equals(email)).AsEnumerable();
             }
             catch (Exception ex)
             {

@@ -13,6 +13,7 @@ namespace BussinessLayer.Repos
         IEnumerable<Order> GetOrders();
         IEnumerable<Order> SearchOrders(string search);
         Order GetOrderById(int id);
+        IEnumerable<Order> GetOrderByMemberEmail(string email);
         Order AddOrder(Order order);
         void UpdateOrder(Order order);
         void RemoveOrder(Order order);
@@ -24,6 +25,7 @@ namespace BussinessLayer.Repos
         public Order AddOrder(Order order) => OrderDAO.Instance.AddOrder(order);
 
         public Order GetOrderById(int id) => OrderDAO.Instance.GetOrderByID(id);
+        public IEnumerable<Order> GetOrderByMemberEmail(string email) => OrderDAO.Instance.GetOrderByMemberEmail(email);
 
         public IEnumerable<Order> GetOrders() => OrderDAO.Instance.GetOrderList();
 

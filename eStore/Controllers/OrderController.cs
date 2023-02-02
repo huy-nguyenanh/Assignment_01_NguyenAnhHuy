@@ -14,17 +14,20 @@ namespace eStore.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepo;
+        private readonly IOrderDetailRepository _orderDetailRepo;
         private readonly IMapper _mapper;
 
-        public OrderController(IOrderRepository orderRepo, IMapper mapper)
+        public OrderController(IOrderRepository orderRepo, IMapper mapper, IOrderDetailRepository orderDetailRepo)
         {
             _orderRepo = orderRepo;
             _mapper = mapper;
+            _orderDetailRepo = orderDetailRepo;
         }
         [HttpGet("list")]
         public IActionResult Gets()
         {
             var orders = _orderRepo.GetOrders();
+
             if (orders == null || orders.Count() == 0)
             {
                 return BadRequest("Empty Data");
@@ -41,14 +44,23 @@ namespace eStore.Controllers
             }
             return Ok(order);
         }
+        [HttpGet("member/{email}")]
+        public IActionResult Get(string email)
+        {
+            var order = _orderRepo.GetOrderByMemberEmail(email);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            return Ok(order);
+        }
         [HttpPost("create")]
-        public IActionResult Post([FromBody] OrderViewModel order)
+        public IActionResult Post([FromBody] Order order)
         {
             try
             {
-                var createOrder = _mapper.Map<Order>(order);
-                _orderRepo.AddOrder(createOrder);
-                return Created("", createOrder);
+                _orderRepo.AddOrder(order);
+                return Created("", order);
             }
             catch (System.Exception)
             {
@@ -56,7 +68,7 @@ namespace eStore.Controllers
             }
         }
         [HttpPut("update")]
-        public IActionResult Put([FromBody] OrderViewModel order)
+        public IActionResult Put([FromBody] Order order)
         {
             try
             {
@@ -65,8 +77,8 @@ namespace eStore.Controllers
                 {
                     return NotFound();
                 }
-                _mapper.Map<OrderViewModel, Order>(order, updateOrder);
-                _orderRepo.UpdateOrder(updateOrder);
+                _orderRepo.UpdateOrder(order);
+                _orderDetailRepo.UpdateOrderDetail(order.OrderDetails);
                 return Ok();
             }
             catch (System.Exception)

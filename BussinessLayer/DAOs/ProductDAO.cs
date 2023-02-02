@@ -1,4 +1,5 @@
 ﻿using DataLayer.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace BussinessLayer.DAOs
             try
             {
                 var myStoreDB = new FStoreDBContext();
-                products = myStoreDB.Products.ToList();
+                products = myStoreDB.Products.Include(c => c.Category).ToList();
             }
             catch (Exception ex)
             {
@@ -49,7 +50,7 @@ namespace BussinessLayer.DAOs
             try
             {
                 var productDB = new FStoreDBContext();
-                products = productDB.Products.Where(products => products.ProductName.Contains(search)).ToList();
+                products = productDB.Products.Where(products => products.ProductName.Contains(search)).Include(c => c.Category).ToList();
             }
             catch (Exception ex)
             {
@@ -92,7 +93,7 @@ namespace BussinessLayer.DAOs
             try
             {
                 var myStoreDB = new FStoreDBContext();
-                product = myStoreDB.Products.SingleOrDefault(product => product.ProductId == productID);
+                product = myStoreDB.Products.Include( c=> c.Category).SingleOrDefault(product => product.ProductId == productID);
             }
             catch (Exception ex)
             {
@@ -131,7 +132,7 @@ namespace BussinessLayer.DAOs
                 if (p != null)
                 {
                     var myStoreDB = new FStoreDBContext();
-                    myStoreDB.Entry<Product>(p).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                    myStoreDB.Entry<Product>(product).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                     myStoreDB.SaveChanges();
                 }
                 else

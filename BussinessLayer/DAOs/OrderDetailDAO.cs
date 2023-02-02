@@ -43,13 +43,14 @@ namespace BussinessLayer.DAOs
             return orderDetails;
         }
 
-        public OrderDetail GetOrderDetailByID(int orderDetailID)
+        public IEnumerable<OrderDetail> GetOrderDetailByID(int orderDetailID)
         {
-            OrderDetail orderDetail = null;
+            IEnumerable<OrderDetail> orderDetail = null;
             try
             {
                 var myStoreDB = new FStoreDBContext();
-                orderDetail = myStoreDB.OrderDetails.SingleOrDefault(orderDetail => orderDetail.OrderId == orderDetailID);
+                //orderDetail = myStoreDB.OrderDetails.SingleOrDefault(orderDetail => orderDetail.OrderId == orderDetailID);
+                orderDetail = myStoreDB.OrderDetails.Where(w => w.OrderId == orderDetailID);
             }
             catch (Exception ex)
             {
@@ -62,8 +63,8 @@ namespace BussinessLayer.DAOs
         {
             try
             {
-                OrderDetail p = GetOrderDetailByID((int) orderDetail.OrderId);
-                if (p == null)
+                IEnumerable<OrderDetail> p = GetOrderDetailByID((int) orderDetail.OrderId);
+                if (p == null || !p.Any())
                 {
                     var myStoreDB = new FStoreDBContext();
                     myStoreDB.OrderDetails.Add(orderDetail);
@@ -80,15 +81,18 @@ namespace BussinessLayer.DAOs
             }
         }
 
-        public void UpdateOrderDetail(OrderDetail orderDetail)
+        public void UpdateOrderDetail(IEnumerable<OrderDetail> orderDetail)
         {
             try
             {
-                OrderDetail p = GetOrderDetailByID((int) orderDetail.OrderId);
-                if (p != null)
+                IEnumerable<OrderDetail> p = GetOrderDetailByID((int) orderDetail.FirstOrDefault().OrderId);
+                if (p != null || p.Any())
                 {
                     var myStoreDB = new FStoreDBContext();
-                    myStoreDB.Entry<OrderDetail>(p).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                    foreach (var item in orderDetail)
+                    {
+                        myStoreDB.Entry<OrderDetail>(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                    }
                     myStoreDB.SaveChanges();
                 }
                 else
@@ -102,26 +106,26 @@ namespace BussinessLayer.DAOs
             }
         }
 
-        public void RemoveOrderDetail(OrderDetail orderDetail)
-        {
-            try
-            {
-                OrderDetail p = GetOrderDetailByID((int) orderDetail.OrderId);
-                if (p != null)
-                {
-                    var myStoreDB = new FStoreDBContext();
-                    myStoreDB.Remove(p);
-                    myStoreDB.SaveChanges();
-                }
-                else
-                {
-                    throw new Exception("The orderDetail has not existed!");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+        //public void RemoveOrderDetail(OrderDetail orderDetail)
+        //{
+        //    try
+        //    {
+        //        OrderDetail p = GetOrderDetailByID((int) orderDetail.OrderId);
+        //        if (p != null)
+        //        {
+        //            var myStoreDB = new FStoreDBContext();
+        //            myStoreDB.Remove(p);
+        //            myStoreDB.SaveChanges();
+        //        }
+        //        else
+        //        {
+        //            throw new Exception("The orderDetail has not existed!");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
     }
 }
